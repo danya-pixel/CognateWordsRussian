@@ -1,4 +1,3 @@
-from zmq import device
 from model import BaseSiamese
 import fasttext.util
 import torch
