@@ -5,10 +5,15 @@ Siamese network to identify cognates
 
 Python 3.8.10
 
-'''
+```
 pip install -r requirements.txt
-'''
+```
 
-Siamese synonyms detector: Done
-Cognate words dataset: In progress
-CognateNet: In progress
+
+*Siamese synonyms detector*: Done
+
+
+*Cognate words dataset*: In progress
+
+
+*CognateNet*: In progress
