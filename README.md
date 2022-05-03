@@ -10,10 +10,10 @@ pip install -r requirements.txt
 ```
 
 
-*Siamese synonyms detector*: Done
+**Siamese synonyms detector**: Done
 
 
-*Cognate words dataset*: In progress
+**Cognate words dataset**: In progress
 
 
-*CognateNet*: In progress
+**CognateNet**: In progress
