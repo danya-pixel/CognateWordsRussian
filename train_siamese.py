@@ -12,7 +12,9 @@ from sklearn.metrics import classification_report
 from sklearn.model_selection import train_test_split
 
 
-def get_dataloaders(dataset, batch_size: int) -> Tuple:
+def get_dataloaders(datapath, batch_size: int) -> Tuple:
+    dataset = pd.read_csv(datapath)
+
     train, test = train_test_split(dataset)
     train, val = train_test_split(train)
 
@@ -30,7 +32,8 @@ def get_dataloaders(dataset, batch_size: int) -> Tuple:
 
 
 def validate(
-    EMBEDDING_SIZE: int, OUTPUT_DIR: str, MODEL_NAME: str, test_dataloader, loss_fn) -> None:
+    EMBEDDING_SIZE: int, OUTPUT_DIR: str, MODEL_NAME: str, test_dataloader, loss_fn
+) -> None:
     print("Validating on test...")
     best_model = BaseSiamese(EMBEDDING_SIZE)
     best_model.load_state_dict(torch.load(f"{OUTPUT_DIR}/{MODEL_NAME}.pth"))
@@ -43,21 +46,21 @@ def validate(
 
 
 if __name__ == "__main__":
-    dataset = pd.read_csv("data/siamese_synonyms.csv")
-
+    DATA_PATH = "data/processed/cognates_balanced.csv"
     BATCH_SIZE = 256
 
     fasttext.util.download_model("ru", if_exists="ignore")
     fasttext_model = fasttext.load_model("cc.ru.300.bin")
 
     train_dataloader, val_dataloader, test_dataloader = get_dataloaders(
-        dataset, BATCH_SIZE
+        DATA_PATH, BATCH_SIZE
     )
 
     DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     EMBEDDING_SIZE = fasttext_model.get_dimension()
     OUTPUT_DIR = "trained_models"
-    MODEL_NAME = "siamese_ft"
+    MODEL_NAME = "cognates_siamese_ft_balanced"
+    NUM_EPOCHS = 10
 
     config = (OUTPUT_DIR, MODEL_NAME)
 
@@ -75,7 +78,7 @@ if __name__ == "__main__":
         loss_fn,
         optimizer,
         config,
-        num_epochs=5,
+        NUM_EPOCHS,
     )
 
     validate(EMBEDDING_SIZE, OUTPUT_DIR, MODEL_NAME, test_dataloader, loss_fn)

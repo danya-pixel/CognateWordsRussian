@@ -1,4 +1,5 @@
 from torch.utils.data import Dataset
+import torch
 
 
 class SynonymsDataset(Dataset):
@@ -8,7 +9,7 @@ class SynonymsDataset(Dataset):
         """Init dataset
 
         Args:
-            data (DataFrame): DataFrame (word_1, word_2, is_synonyms)
+            data (DataFrame): DataFrame (word_1, word_2, is_cognate)
             embeddings (model, optional): Any embeddings model (fasttext, GloVe, etc.). Defaults to None.
         """
         self.data = data
@@ -20,7 +21,7 @@ class SynonymsDataset(Dataset):
     def __getitem__(self, idx):
         word_1, word_2, is_synonyms = self.data.iloc[idx]
         if self.embeddings:
-            word_1 = self.embeddings[word_1]
-            word_2 = self.embeddings[word_2]
+            word_1 = torch.tensor(self.embeddings[word_1])
+            word_2 = torch.tensor(self.embeddings[word_2])
         is_synonyms = 1 if is_synonyms else -1  # for torch.nn.CosineEmbeddingLoss()
         return word_1, word_2, is_synonyms
