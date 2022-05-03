@@ -1,4 +1,3 @@
-from tkinter.messagebox import NO
 from typing import Tuple
 import pandas as pd
 import fasttext.util
