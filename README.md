@@ -5,8 +5,10 @@ Siamese network to identify cognates
 
 Python 3.8.10
 
+To train synonyms model:
 ```
 pip install -r requirements.txt
+python3 synonyms.py
 ```
 
 
