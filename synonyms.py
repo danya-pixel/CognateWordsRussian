@@ -11,7 +11,7 @@ from sklearn.metrics import classification_report
 from sklearn.model_selection import train_test_split
 
 
-def get_dataloaders(dataset, batch_size):
+def get_dataloaders(dataset, batch_size: int):
     train, test = train_test_split(dataset)
     train, val = train_test_split(train)
 

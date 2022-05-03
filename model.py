@@ -1,3 +1,4 @@
+from typing import Tuple
 import torch
 import torch.nn as nn
 from tqdm import tqdm
@@ -6,7 +7,7 @@ from sklearn.metrics import f1_score
 
 
 class BaseSiamese(nn.Module):
-    def __init__(self, embedding_size):
+    def __init__(self, embedding_size: int):
         super(BaseSiamese, self).__init__()
         self.fc = nn.Linear(embedding_size, 150)
 
@@ -15,7 +16,16 @@ class BaseSiamese(nn.Module):
         return fc
 
 
-def train(device, model, train_dataloader, val_dataloader, loss_fn, optimizer, config, num_epochs=10):
+def train(
+    device,
+    model,
+    train_dataloader,
+    val_dataloader,
+    loss_fn,
+    optimizer,
+    config: Tuple,
+    num_epochs: int = 10,
+):
     """Train model on given Dataloder
     Args:
         device (CUDA or CPU): Device to train
