@@ -1,3 +1,5 @@
+from tkinter.messagebox import NO
+from typing import Tuple
 import pandas as pd
 import fasttext.util
 
@@ -11,7 +13,7 @@ from sklearn.metrics import classification_report
 from sklearn.model_selection import train_test_split
 
 
-def get_dataloaders(dataset, batch_size: int):
+def get_dataloaders(dataset, batch_size: int) -> Tuple:
     train, test = train_test_split(dataset)
     train, val = train_test_split(train)
 
@@ -28,7 +30,8 @@ def get_dataloaders(dataset, batch_size: int):
     return (train_dataloader, val_dataloader, test_dataloader)
 
 
-def validate(EMBEDDING_SIZE, OUTPUT_DIR, MODEL_NAME, test_dataloader, loss_fn):
+def validate(
+    EMBEDDING_SIZE: int, OUTPUT_DIR: str, MODEL_NAME: str, test_dataloader, loss_fn) -> None:
     print("Validating on test...")
     best_model = BaseSiamese(EMBEDDING_SIZE)
     best_model.load_state_dict(torch.load(f"{OUTPUT_DIR}/{MODEL_NAME}.pth"))

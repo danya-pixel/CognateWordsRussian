@@ -1,3 +1,4 @@
+from curses import noecho
 from typing import Tuple
 import torch
 import torch.nn as nn
@@ -25,7 +26,7 @@ def train(
     optimizer,
     config: Tuple,
     num_epochs: int = 10,
-):
+) -> None:
     """Train model on given Dataloder
     Args:
         device (CUDA or CPU): Device to train
@@ -71,7 +72,7 @@ def train(
         val_history.append(f1)
 
 
-def evaluate(device, model, dataloader, loss_fn):
+def evaluate(device, model, dataloader, loss_fn) -> Tuple:
     """Evaluate model on given DataLoader
     Args:
         device (CUDA or CPU): Device to evaluation
