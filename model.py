@@ -27,6 +27,7 @@ def train(device, model, train_dataloader, val_dataloader, loss_fn, optimizer, c
         config: OUTPUT_DIR, MODEL_NAME
         num_epochs: int
     """
+    print("Training in progress...")
     OUTPUT_DIR, MODEL_NAME = config
     val_history = [0]
     for epoch in range(num_epochs):

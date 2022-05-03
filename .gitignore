@@ -129,5 +129,5 @@ dmypy.json
 .pyre/
 
 *.bin
-siamese_old.ipynb
+*.ipynb
 trained_models
