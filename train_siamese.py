@@ -1,11 +1,12 @@
 from typing import Tuple
 import pandas as pd
 import fasttext.util
+import os
 
 import torch
 from torch.utils.data import DataLoader
 
-from dataset import SynonymsDataset
+from dataset import SynonymsDataset, preprocess_cognate_json
 from model import BaseSiamese, train, evaluate
 
 from sklearn.metrics import classification_report
@@ -46,6 +47,10 @@ def validate(
 
 
 if __name__ == "__main__":
+    if not os.path.exists("data/processed"):
+        os.mkdir("data/processed")
+        preprocess_cognate_json()
+
     DATA_PATH = "data/processed/cognates_balanced.csv"
     BATCH_SIZE = 256
 
@@ -70,15 +75,5 @@ if __name__ == "__main__":
     loss_fn = torch.nn.CosineEmbeddingLoss()
     optimizer = torch.optim.Adam(params=model.parameters(), weight_decay=1e-9)
 
-    train(
-        DEVICE,
-        model,
-        train_dataloader,
-        val_dataloader,
-        loss_fn,
-        optimizer,
-        config,
-        NUM_EPOCHS,
-    )
-
+    train(DEVICE, model, train_dataloader, val_dataloader, loss_fn, optimizer, config, NUM_EPOCHS)
     validate(EMBEDDING_SIZE, OUTPUT_DIR, MODEL_NAME, test_dataloader, loss_fn)
