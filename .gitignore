@@ -130,7 +130,6 @@ dmypy.json
 
 *.bin
 *.ipynb
-trained_models
 data/processed
 logs
 content
