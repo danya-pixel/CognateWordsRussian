@@ -7,7 +7,7 @@ from sklearn.metrics import f1_score
 
 
 class BaseSiamese(nn.Module):
-    def __init__(self, embedding_size: int=300):
+    def __init__(self, embedding_size: int = 300):
         super(BaseSiamese, self).__init__()
         self.fc = nn.Linear(embedding_size, 150)
 
@@ -102,7 +102,6 @@ def evaluate(device, model, dataloader, loss_fn) -> Tuple:
 
 
 def inference(model, word_1, word_2):
-
     with torch.no_grad():
         cos = torch.nn.CosineSimilarity(dim=0)
 
@@ -110,4 +109,5 @@ def inference(model, word_1, word_2):
         word_2_processed = model(torch.tensor(word_2))
 
         sim = cos(word_1_processed, word_2_processed)
-        return sim.cpu()>0.5
+        return sim.cpu()
+

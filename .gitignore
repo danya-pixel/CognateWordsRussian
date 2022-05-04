@@ -132,3 +132,5 @@ dmypy.json
 *.ipynb
 trained_models
 data/processed
+logs
+content
