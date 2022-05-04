@@ -1,5 +1,7 @@
 import os
 from pathlib import Path
+import json
+import csv
 
 base_dir = Path('logs')
 
@@ -15,6 +17,9 @@ def save_root(word, correct_word):
         f.write(f'{word};{correct_word}\n')
 
 
-def save_cognate(word1, word2, status: bool):
+def save_cognate(word_1, word_2, siamese_prob, heurisic_predict, status: bool):
+
+    log = [word_1, word_2, siamese_prob, heurisic_predict, status]
     with open(cognate_file, 'a') as f:
-        f.write(f'{word1};{word2};{1 if status else 0}\n')
+        writer = csv.writer(f, delimiter=' ')
+        writer.writerow(log)

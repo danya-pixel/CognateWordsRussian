@@ -1,15 +1,15 @@
 import os
+import torch
 import telebot
+import fasttext.util
 from enum import Enum
+from logger import save_cognate
 from root_extractor.baseline import (
     get_heuristic_cognate,
     get_roots,
     generate_bitmask_for_list,
     get_only_root,
 )
-from logger import save_cognate
-import fasttext.util
-import torch
 from model import BaseSiamese, inference
 from root_extractor.neural_morph_segm import load_cls
 
@@ -31,24 +31,27 @@ users = {}
 
 @bot.middleware_handler
 def register_user(message):
-    users[message.from_user.id] = users.get(message.from_user.id, UserContext.NONE)
+    users[message.from_user.id] = users.get(
+        message.from_user.id, UserContext.NONE)
 
 
 @bot.message_handler(commands=["start"])
 def start(message):
-    markup = telebot.types.ReplyKeyboardMarkup(row_width=3, resize_keyboard=True)
+    markup = telebot.types.ReplyKeyboardMarkup(
+        row_width=3, resize_keyboard=True)
     btn_root = telebot.types.KeyboardButton("Найти корень слова")
-    btn_cognate = telebot.types.KeyboardButton("Является ли пара однокоренной?")
+    btn_cognate = telebot.types.KeyboardButton(
+        "Является ли пара однокоренной?")
     markup.row(btn_root, btn_cognate)
     bot.send_message(
         message.from_user.id,
         """Добро пожаловать в бота для проекта НКРЯ 2.0 
-Этот бот может оценить возраст потенциального читателя для предложенного текста, выделить корень слова и узнать являются ли пара слов однокоренной.
+        Этот бот может выделить корень слова и узнать являются ли пара слов однокоренной.
 
-"Является ли пара однокоренной?" определяет, является ли пара слов однокоренной
+        "Является ли пара однокоренной?" определяет, является ли пара слов однокоренной
 
-"Найти корень слова" определяет корень слова предложенного слова
-""",
+        "Найти корень слова" определяет корень слова предложенного слова
+        """,
         reply_markup=markup,
     )
     users[message.from_user.id] = UserContext.NONE
@@ -58,12 +61,12 @@ def start(message):
 def help(message):
     bot.send_message(
         message.from_user.id,
-        """Этот бот может оценить возраст потенциального читателя для предложенного текста, выделить корень слова и узнать являются ли пара слов однокоренной.
+        """Этот бот может выделить корень слова и узнать являются ли пара слов однокоренной.
 
-"Является ли пара однокоренной?" определяет, является ли пара слов однокоренной
+        "Является ли пара однокоренной?" определяет, является ли пара слов однокоренной
 
-"Найти корень слова" определяет корень слова предложенного слова
-""",
+        "Найти корень слова" определяет корень слова предложенного слова
+        """,
     )
     users[message.from_user.id] = UserContext.NONE
 
@@ -94,7 +97,8 @@ def get_text_messages(message):
     elif user_status == UserContext.ROOT:
         words = message.text.lower().split()
         if not words or len(words) != 1:
-            bot.send_message(message.from_user.id, "Отправь мне только одно слово")
+            bot.send_message(message.from_user.id,
+                             "Отправь мне только одно слово")
             return
         word = words[0]
         roots = get_roots(root_extractor_model, [word])
@@ -103,10 +107,6 @@ def get_text_messages(message):
             word[i].upper() if v else word[i] for i, v in enumerate(bitmask)
         ]
 
-        # btn_incorrect = telebot.types.InlineKeyboardButton(text="Тут ошибка", callback_data=f'error-root_{word}')
-        # btn_correct = telebot.types.InlineKeyboardButton(text="Все верно", callback_data=f'correct-root_{word}')
-        # btn_markup = telebot.types.InlineKeyboardMarkup()
-        # btn_markup.add(btn_correct, btn_incorrect)
         bot.send_message(
             message.from_user.id,
             f'Большими буквами выделен корень слова\n{"".join(word_with_root_list)}',
@@ -120,21 +120,24 @@ def get_text_messages(message):
 
         word_1, word_2 = words
         word_1, word_2 = word_1.lower().strip(), word_2.lower().strip()
-        btn_incorrect = telebot.types.InlineKeyboardButton(
-            text="Тут ошибка", callback_data=f"error-cognate_{word_1}&{word_2}"
-        )
-        btn_correct = telebot.types.InlineKeyboardButton(
-            text="Все верно", callback_data=f"correct-cognate_{word_1}&{word_2}"
-        )
-        btn_markup = telebot.types.InlineKeyboardMarkup()
-        btn_markup.add(btn_correct, btn_incorrect)
 
-        heurisic_predict = get_heuristic_cognate(root_extractor_model, word_1, word_2)
+        heurisic_predict = get_heuristic_cognate(
+            root_extractor_model, word_1, word_2)
 
         word_1_vec = fasttext_model[word_1]
         word_2_vec = fasttext_model[word_2]
         siamese_prob = inference(siamese_model, word_1_vec, word_2_vec)
         siamese_predict = siamese_prob > 0.5
+        btn_incorrect = telebot.types.InlineKeyboardButton(
+            text="Тут ошибка", callback_data=f"error-cognate_{word_1}&{word_2}&{siamese_prob:.2f}&{heurisic_predict}"
+
+        )
+        btn_correct = telebot.types.InlineKeyboardButton(
+            text="Все верно", callback_data=f"correct-cognate_{word_1}&{word_2}&{siamese_prob:.2f}&{heurisic_predict}"
+        )
+        btn_markup = telebot.types.InlineKeyboardMarkup()
+        btn_markup.add(btn_correct, btn_incorrect)
+
         if word_1 == word_2 or siamese_predict and heurisic_predict:
             bot.send_message(
                 message.from_user.id, "Однокоренные", reply_markup=btn_markup
@@ -164,10 +167,11 @@ def query_text(inline_query):
         inline_handlers[query_type](inline_query, query_data)
 
     bot.answer_callback_query(inline_query.id, "Спасибо за ваш отзыв")
-    bot.edit_message_reply_markup(inline_query.message.chat.id, inline_query.message.id)
+    bot.edit_message_reply_markup(
+        inline_query.message.chat.id, inline_query.message.id)
 
 
-if __name__ == "__main__":
+if name == "__main__":
     fasttext.util.download_model("ru", if_exists="ignore")
     fasttext_model = fasttext.load_model("cc.ru.300.bin")
     DEVICE = torch.device("cpu")
@@ -182,6 +186,6 @@ if __name__ == "__main__":
     root_extractor_model = load_cls(ROOTS_MODEL_PATH)
 
     siamese_model.eval()
-    # init("models/morphemes-3-5-3-memo_dima.json")
+
     print("Start polling")
     bot.polling()
