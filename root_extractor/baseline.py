@@ -161,7 +161,6 @@ def get_heuristic_cognate(model, word1, word2):
         "чет": "чит",
     }
     root1, root2 = get_roots(model, [word1, word2])
-    print(root1, root2)
     root1 = get_only_root(root1)
     root2 = get_only_root(root2)
     root1_mix = []
@@ -174,8 +173,6 @@ def get_heuristic_cognate(model, word1, word2):
         root2_mix.extend(find_possible_root_alternations(r))
         if r in mix_roots:
             root1_mix.append(mix_roots[r])
-    # print(root1_mix)
-    # print(root2_mix)
     return bool(set(root1_mix).intersection(root2_mix))
 
 

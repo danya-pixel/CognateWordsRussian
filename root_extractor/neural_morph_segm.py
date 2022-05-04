@@ -430,11 +430,7 @@ class Partitioner:
                 self._recode_bucket_data(bucket_data, bucket_length, self.symbol_codes_)
             ]
             if self.to_memorize_morphemes:
-                print("Processing morphemes for bucket length", bucket_length)
                 answer.append(self._morpheme_memo_func(bucket_data, bucket_length))
-                print(
-                    "Processing morphemes for bucket length", bucket_length, "finished"
-                )
             return answer
 
     def _recode_bucket_data(self, data, bucket_length, encoding):
@@ -608,7 +604,6 @@ class Partitioner:
         Создаёт нейронные модели
         """
         self.models_ = [self.build_model() for _ in range(self.models_number)]
-        print(self.models_[0].summary())
         return self
 
     def build_model(self):
@@ -835,8 +830,6 @@ class Partitioner:
             defaultdict(int),
         )
         for i, word in enumerate(words, 1):
-            if i % 5000 == 0:
-                print("{} words processed".format(i))
             positions = self.morpheme_trie_.find_substrings(word, return_positions=True)
             for starts, end in positions:
                 for start in starts:
@@ -900,7 +893,6 @@ class Partitioner:
         for r, (bucket_data, (_, bucket_indexes)) in enumerate(
             zip(data_by_buckets, indexes_by_buckets), 1
         ):
-            print("Bucket {} predicting".format(r))
             bucket_probs = np.mean(
                 [model.predict(bucket_data) for model in self.models_], axis=0
             )
@@ -908,8 +900,6 @@ class Partitioner:
                 word_probs[i] = elem
         answer = [None] * len(words)
         for i, (elem, word) in enumerate(zip(word_probs, words)):
-            if i % 1000 == 0 and i > 0:
-                print("{} words decoded".format(i))
             answer[i] = self._decode_best(elem, len(word))
         return answer
 
@@ -1240,8 +1230,6 @@ if __name__ == "__main__":
             english_metrics=params.get("english_metrics", False),
             measure_last=measure_last,
         )
-        for key, value in sorted(quality):
-            print("{}={:.2f}".format(key, 100 * value))
         if "outfile" in params:
             outfile = params["outfile"]
             output_probs = params.get("output_probs", True)

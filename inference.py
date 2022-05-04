@@ -1,7 +1,6 @@
-from model import BaseSiamese
+from model import BaseSiamese, inference
 import fasttext.util
 import torch
-from model import inference
 from root_extractor.baseline import get_heuristic_cognate
 from root_extractor.neural_morph_segm import load_cls
 
