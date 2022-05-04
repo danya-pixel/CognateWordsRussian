@@ -171,7 +171,7 @@ def query_text(inline_query):
         inline_query.message.chat.id, inline_query.message.id)
 
 
-if name == "__main__":
+if __name__ == "__main__":
     fasttext.util.download_model("ru", if_exists="ignore")
     fasttext_model = fasttext.load_model("cc.ru.300.bin")
     DEVICE = torch.device("cpu")
