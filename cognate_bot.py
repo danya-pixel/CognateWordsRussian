@@ -40,8 +40,7 @@ def start(message):
     markup = telebot.types.ReplyKeyboardMarkup(
         row_width=3, resize_keyboard=True)
     btn_root = telebot.types.KeyboardButton("Найти корень слова")
-    btn_cognate = telebot.types.KeyboardButton(
-        "Является ли пара однокоренной?")
+    btn_cognate = telebot.types.KeyboardButton("Является ли пара однокоренной?")
     markup.row(btn_root, btn_cognate)
     bot.send_message(
         message.from_user.id,
