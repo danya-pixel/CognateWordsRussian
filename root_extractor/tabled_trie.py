@@ -559,7 +559,7 @@ def load_trie(infile):
             setattr(trie, attr, flags[i])
         read_data = flags[-1]
         final = [False] * nodes_number
-        print(len(alphabet), nodes_number)
+        # print(len(alphabet), nodes_number)
         if trie.dict_storage:
             graph = [defaultdict(lambda: -1) for _ in range(nodes_number)]
         elif trie.is_numpied:
@@ -615,7 +615,7 @@ def make_trie(
         dict_storage=dict_storage,
     )
     trie.fit(words)
-    print(len(trie))
+    # print(len(trie))
     if compressed:
         tm = TrieMinimizer()
         trie = tm.minimize(
@@ -626,7 +626,7 @@ def make_trie(
             precompute_symbols=precompute_symbols,
             allow_spaces=allow_spaces,
         )
-        print(len(trie))
+        # print(len(trie))
     return trie
 
 
@@ -661,7 +661,7 @@ def test_basic():
     trie = Trie(alphabet, allow_spaces=True, dict_storage=True)
     words = ["aba", "acba", "b", "bab", "a", "cb"]
     trie.fit(words)
-    print(trie)
+    # print(trie)
     tm = TrieMinimizer()
     compressed = tm.minimize(
         trie,
@@ -670,12 +670,12 @@ def test_basic():
         make_cashed=True,
         allow_spaces=True,
     )
-    print(compressed)
+    # print(compressed)
     compressed.save("trie.in")
     compressed = load_trie("trie.in")
-    print(compressed.find_partitions("acbacb", 3))
-    for word in compressed.words():
-        print(word)
+    # print(compressed.find_partitions("acbacb", 3))
+    # for word in compressed.words():
+    #     print(word)
     # print(compressed.find_partitions('aba', 1))
     # print(compressed.find_partitions('abab', 1))
     # print(compressed.find_partitions('abab', 2))
@@ -705,7 +705,7 @@ def test_performance():
     trie = load_trie("trie.out")
 
     t5 = time.time()
-    print("{:.3f} {:.3f} {:.3f} {:.3f}".format(t5 - t4, t4 - t3, t3 - t2, t2 - t1))
+    # print("{:.3f} {:.3f} {:.3f} {:.3f}".format(t5 - t4, t4 - t3, t3 - t2, t2 - t1))
     compressed = tm.minimize(
         trie, make_numpied=False, make_cashed=True, precompute_symbols=2
     )
@@ -717,7 +717,7 @@ def test_performance():
     t8 = time.time()
     compressed = load_trie("trie_compressed.out")
     t9 = time.time()
-    print("{:.3f} {:.3f} {:.3f}".format(t9 - t8, t8 - t7, t7 - t6))
+    # print("{:.3f} {:.3f} {:.3f}".format(t9 - t8, t8 - t7, t7 - t6))
 
 
 def test_encoding():
@@ -741,7 +741,7 @@ def test_encoding():
     for word in words[10000:]:
         flag = word in trie
     # минимизация
-    print("{:.3f} {:.3f}".format(time.time() - t2, t2 - t1))
+    #print("{:.3f} {:.3f}".format(time.time() - t2, t2 - t1))
     # перекодировка
     encoded_alphabet = list(range(list(alphabet)))
     recoding = {a: code for code, a in enumerate(alphabet)}
@@ -772,13 +772,13 @@ def test_precomputing_symbols():
         "|".join(",".join(map(str, sorted(elem))) for elem in future_symbols)
         for future_symbols in compressed.data
     ]
-    print(sum(int(len(x) > 1) for x in possible_continuations))
-    print(
-        sum(
-            (list(x)[0] != y)
-            for x, y in zip(possible_continuations, compressed_continuations)
-        )
-    )
+    # print(sum(int(len(x) > 1) for x in possible_continuations))
+    # print(
+    #     sum(
+    #         (list(x)[0] != y)
+    #         for x, y in zip(possible_continuations, compressed_continuations)
+    #     )
+    # )
 
 
 if __name__ == "__main__":

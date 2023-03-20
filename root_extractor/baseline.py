@@ -142,6 +142,7 @@ def get_heuristic_cognate(model, word1, word2):
         "твар": "твор",
         "зар": "зор",
         "плав": "плов",
+        "плыв": "плов",
         "кас": "кос",
         "мак": "мок",
         "равн": "ровн",
@@ -174,6 +175,15 @@ def get_heuristic_cognate(model, word1, word2):
         if r in mix_roots:
             root1_mix.append(mix_roots[r])
     return bool(set(root1_mix).intersection(root2_mix))
+
+def get_simple_heuristic_cognate(model, word1, word2):
+   
+    root1, root2 = get_roots(model, [word1, word2])
+    
+    root1 = get_only_root(root1)
+    root2 = get_only_root(root2)
+    print(root1, root2)
+    return root1 == root2
 
 
 if __name__ == "__main__":

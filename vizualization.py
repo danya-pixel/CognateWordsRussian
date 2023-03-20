@@ -1,21 +1,25 @@
 from model import BaseSiamese
-import fasttext.util
+import gensim
 import torch
-import plotly
+from pymystem3 import Mystem
+from inference import pos_tag_input
 import numpy as np
 import plotly.graph_objs as go
 from sklearn.decomposition import PCA
 
 
-def display_pca_scatterplot_3D(
-    siamese, words, topn=2
-):
+def display_pca_scatterplot_3D(siamese, words, topn=2):
+
+    words_pos = []
+    for w in words:
+        words_pos.append(pos_tag_input(m, w)[0])
+
     if siamese:
         word_vectors = np.array(
-            [siamese(torch.tensor(fasttext_model[w])).detach().numpy() for w in words]
+            [siamese(torch.tensor(fasttext_model[w])).detach().numpy() for w in words_pos]
         )
     else:
-        word_vectors = np.array([fasttext_model[w] for w in words])
+        word_vectors = np.array([fasttext_model[w] for w in words_pos])
     two_dim = PCA(random_state=0).fit_transform(word_vectors)[:, :2]
 
     data = []
@@ -43,27 +47,29 @@ def display_pca_scatterplot_3D(
         autosize=False,
         width=1000,
         height=500,
+        xaxis=dict(visible=False),
+        yaxis=dict(visible=False),
     )
 
     plot_figure = go.Figure(data=data, layout=layout)
 
     FILENAME = 'siamese' if siamese else 'embeddings' 
-    plot_figure.write_image(f'content/{FILENAME}.png')
+    plot_figure.write_image(f'vizualization_of_space/{FILENAME}.png')
 
 
 if __name__ == "__main__":
-    fasttext.util.download_model("ru", if_exists="ignore")
-    fasttext_model = fasttext.load_model("cc.ru.300.bin")
+    m = Mystem()
+    fasttext_model = gensim.models.KeyedVectors.load('vectors/geowac/model.model')
     DEVICE = torch.device("cpu")
-    EMBEDDING_SIZE = fasttext_model.get_dimension()
-    words =['ученье', 'ученый', 'мама','мамочка','красный','красивый']
-    
+    EMBEDDING_SIZE = fasttext_model.vector_size
+    words =['зябь', 'озябнуть', 'красный', 'красивый', 'школьный', 'школьник']
+
     display_pca_scatterplot_3D(False, words)
 
-    MODEL_PATH = "trained_models/siamese/cognates_siamese_ft_balanced.pth"
+    MODEL_PATH = "trained_models/siamese/cognates_siamese_ft_balanced_new.pth"
 
     siamese_model = BaseSiamese(EMBEDDING_SIZE)
     siamese_model.load_state_dict(torch.load(MODEL_PATH))
     siamese_model.to(DEVICE)
-
     display_pca_scatterplot_3D(siamese_model, words)
+

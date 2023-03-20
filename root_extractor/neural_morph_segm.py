@@ -5,9 +5,8 @@ import bisect
 from itertools import chain
 from collections import defaultdict
 import numpy as np
-
 import json
-
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
 import keras.layers as kl
 import keras.backend as kb
 from keras.models import Model
