@@ -44,7 +44,7 @@ if __name__ == '__main__':
     DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     EMBEDDING_SIZE = fasttext_model.vector_size
     OUTPUT_DIR = 'trained_models/siamese'
-    MODEL_NAME = 'cognates_siamese_ft_balanced_new'
+    MODEL_NAME = 'siamese_model'
     NUM_EPOCHS = 100
 
     config = (OUTPUT_DIR, MODEL_NAME)
