@@ -59,7 +59,7 @@ def display_pca_scatterplot_3D(siamese, words, topn=2):
 
 if __name__ == "__main__":
     m = Mystem()
-    fasttext_model = gensim.models.KeyedVectors.load('vectors/geowac/model.model')
+    fasttext_model = gensim.models.KeyedVectors.load('vectors/model.model')
     DEVICE = torch.device("cpu")
     EMBEDDING_SIZE = fasttext_model.vector_size
     words =['зябь', 'озябнуть', 'красный', 'красивый', 'школьный', 'школьник']

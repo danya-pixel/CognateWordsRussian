@@ -37,7 +37,7 @@ if __name__ == '__main__':
     test_path = 'data/preprocessed/test_pos_dataset.csv'
     BATCH_SIZE = 256
 
-    fasttext_model = gensim.models.KeyedVectors.load('vectors/geowac/model.model')
+    fasttext_model = gensim.models.KeyedVectors.load('vectors/model.model')
 
     train_dataloader, val_dataloader, test_dataloader = get_dataloaders(train_path, val_path, test_path, BATCH_SIZE)
 
