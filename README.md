@@ -5,6 +5,11 @@ Siamese network to identify cognates
 
 Python 3.8.10
 
+To download fasttext model:
+```
+sh download_fasttext_vectors.sh
+```
+
 To train synonyms model:
 ```
 pip install -r requirements.txt

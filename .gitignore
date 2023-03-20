@@ -91,4 +91,4 @@ venv/
 .vscode
 
 # Downloaded vectors from rusvectores
-/vectors
+/fasttext_vectors
